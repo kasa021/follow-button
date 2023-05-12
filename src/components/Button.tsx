@@ -1,27 +1,25 @@
-import React, { useState } from 'react'
+import React from 'react';
+import { useSpring, animated } from 'react-spring';
 
 const Button = () => {
-    const [position, setPosition] = useState({ top: 0, left: 0 });
+    const [{ xy }, set] = useSpring(() => ({ xy: [0, 0] }));
 
-    const handleMousseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-        setPosition({
-            top: e.clientY,
-            left: e.clientX
-        });
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        set({ xy: [e.clientX, e.clientY] });
     }
 
     return (
-        <button
-            onMouseMove={handleMousseMove}
-            style={{
-                position: 'fixed',
-                top: position.top,
-                left: position.left
-            }}
-        >
-            Follow me!
-        </button>
-    )
+        <div onMouseMove={handleMouseMove}>
+            <animated.button
+                style={{
+                    transform: xy.to((x, y) => `translate3d(${x}px,${y}px,0)`),
+                    position: 'fixed'
+                }}
+            >
+                Follow Me
+            </animated.button>
+        </div>
+    );
 }
 
-export default Button
+export default Button;
